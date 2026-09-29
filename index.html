@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>YoussefFlix</title>
 
   <style>
@@ -23,6 +24,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
     }
 
     .logo {
@@ -35,12 +37,14 @@
       color: white;
     }
 
-    input {
-      padding: 10px;
-      width: 250px;
+    #search {
+      padding: 12px 15px;
+      width: 320px;
+      max-width: 100%;
       border: none;
-      border-radius: 5px;
-      font-size: 15px;
+      border-radius: 6px;
+      font-size: 16px;
+      outline: none;
     }
 
     .hero {
@@ -49,7 +53,7 @@
       align-items: center;
       padding: 50px 8%;
       background:
-        linear-gradient(90deg, #141414, rgba(20,20,20,0.65)),
+        linear-gradient(90deg, #141414, rgba(20,20,20,.55)),
         url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
       background-position: center;
@@ -57,18 +61,23 @@
 
     .hero h1 {
       font-size: 48px;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
     }
 
     .hero p {
       font-size: 18px;
       color: #ddd;
-      max-width: 550px;
+      max-width: 600px;
       line-height: 1.8;
     }
 
     main {
       padding: 35px 7%;
+    }
+
+    #message {
+      color: #aaa;
+      margin-bottom: 25px;
     }
 
     .movies {
@@ -81,18 +90,19 @@
       background: #222;
       border-radius: 8px;
       overflow: hidden;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .card:hover {
-      transform: scale(1.05);
+      transform: scale(1.04);
       background: #333;
     }
 
     .card img {
       width: 100%;
-      height: 270px;
+      height: 280px;
       object-fit: cover;
+      display: block;
     }
 
     .info {
@@ -101,11 +111,13 @@
 
     .info h3 {
       margin: 0 0 10px;
+      font-size: 18px;
     }
 
     .info p {
       color: #bbb;
-      margin: 5px 0;
+      margin: 6px 0;
+      font-size: 14px;
     }
 
     .button {
@@ -123,7 +135,7 @@
     footer {
       text-align: center;
       background: #111;
-      color: #999;
+      color: #777;
       padding: 25px;
       margin-top: 35px;
     }
@@ -131,15 +143,23 @@
     @media (max-width: 600px) {
       header {
         flex-direction: column;
-        gap: 15px;
       }
 
-      input {
+      #search {
         width: 100%;
       }
 
       .hero h1 {
         font-size: 34px;
+      }
+
+      .movies {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .card img {
+        height: 230px;
       }
     }
   </style>
@@ -147,121 +167,186 @@
 
 <body>
 
-  <header>
-    <div class="logo">Youssef<span>Flix</span></div>
+<header>
 
-    <input
-      id="search"
-      type="text"
-      placeholder="اكتب اسم فيلم أو مسلسل"
-      onkeyup="searchMovie()"
-    >
-  </header>
+  <div class="logo">
+    Youssef<span>Flix</span>
+  </div>
 
-  <section class="hero">
-    <div>
-      <h1>أهلاً بك في YoussefFlix</h1>
-      <p>
-        موقع يوسف للأفلام والمسلسلات.
-        ابحث عن فيلمك أو مسلسلك المفضل واعرف أين تشاهده بشكل رسمي.
-      </p>
-    </div>
-  </section>
+  <input
+    id="search"
+    type="text"
+    placeholder="ابحث عن فيلم أو مسلسل..."
+    autocomplete="off"
+  >
 
-  <main>
-    <h2>أفلام ومسلسلات</h2>
-    <p id="message">اختر فيلمًا أو مسلسلًا.</p>
+</header>
 
-    <div class="movies" id="movies"></div>
-  </main>
+<section class="hero">
 
-  <footer>
-    © 2026 YoussefFlix — تصميم يوسف نبيل
-  </footer>
+  <div>
 
-  <script>
-    const movies = [
-      {
-        name: "Breaking Bad",
-        type: "مسلسل أجنبي",
-        year: "2008",
-        image: "https://image.tmdb.org/t/p/w500/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
-        link: "https://www.google.com/search?q=Breaking+Bad+official+watch"
-      },
-      {
-        name: "Inception",
-        type: "فيلم أجنبي",
-        year: "2010",
-        image: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
-        link: "https://www.google.com/search?q=Inception+official+watch"
-      },
-      {
-        name: "The Dark Knight",
-        type: "فيلم أجنبي",
-        year: "2008",
-        image: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        link: "https://www.google.com/search?q=The+Dark+Knight+official+watch"
-      },
-      {
-        name: "Stranger Things",
-        type: "مسلسل أجنبي",
-        year: "2016",
-        image: "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
-        link: "https://www.google.com/search?q=Stranger+Things+official+watch"
-      },
-      {
-        name: "الفيل الأزرق",
-        type: "فيلم عربي",
-        year: "2014",
-        image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80",
-        link: "https://www.google.com/search?q=الفيل+الأزرق+مشاهدة+رسمية"
-      },
-      {
-        name: "ما وراء الطبيعة",
-        type: "مسلسل عربي",
-        year: "2020",
-        image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=80",
-        link: "https://www.google.com/search?q=ما+وراء+الطبيعة+مشاهدة+رسمية"
-      }
-    ];
+    <h1>أهلاً بك في YoussefFlix</h1>
 
-    function showMovies(list) {
-      const box = document.getElementById("movies");
-      const message = document.getElementById("message");
+    <p>
+      ابحث عن أي فيلم أو مسلسل وشاهد معلوماته
+      وسنة الإنتاج والتقييم والصورة.
+    </p>
 
-      box.innerHTML = "";
+  </div>
 
-      if (list.length === 0) {
-        message.innerText = "ملقيناش الفيلم أو المسلسل ده.";
-        return;
-      }
+</section>
 
-      message.innerText = "عدد النتائج: " + list.length;
+<main>
 
-      list.forEach(movie => {
-        box.innerHTML += `
-          <div class="card">
-            <img src="${movie.image}" alt="${movie.name}">
+  <h2>الأفلام والمسلسلات</h2>
 
-            <div class="info">
-              <h3>${movie.name}</h3>
-              <p>${movie.type}</p>
-              <p>سنة الإنتاج: ${movie.year}</p>
+  <p id="message">
+    جاري تحميل المحتوى...
+  </p>
 
-              <a class="button" href="${movie.link}" target="_blank">
-                ابحث عن المشاهدة الرسمية
-              </a>
-            </div>
-          </div>
-        `;
-      });
+  <div class="movies" id="movies"></div>
+
+</main>
+
+<footer>
+  © 2026 YoussefFlix — تصميم يوسف نبيل
+</footer>
+
+
+<script>
+
+  /* =================================
+     حط TMDB Token هنا
+     ================================= */
+
+  const API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYmVhZmZhMzc3ZWNmMDc2OGIwMjYyY2E4MjA4ZmQ2MyIsIm5iZiI6MTc5MDY5ODQzNi41MTUsInN1YiI6IjZhYmJlM2M0ZTA4ZmE3NTg0YjNiZmI1YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V_LQKE3AL4H4PE52A8YUFbIj1owx3DGCLBdUXb05ZBM";
+
+
+  const API_URL = "https://api.themoviedb.org/3";
+
+  const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+
+
+  const options = {
+
+    method: "GET",
+
+    headers: {
+
+      accept: "application/json",
+
+      Authorization: "Bearer " + API_TOKEN
+
     }
 
-    function searchMovie() {
-      const word = document
-        .getElementById("search")
-        .value
-        .toLowerCase();
+  };
 
-      const result = movies.filter(movie =>
-        movie.name.toLowerCase().includes(w
+
+  const moviesBox =
+    document.getElementById("movies");
+
+  const message =
+    document.getElementById("message");
+
+  const searchInput =
+    document.getElementById("search");
+
+
+  async function loadPopular() {
+
+    if (API_TOKEN === "ضع_التوكن_هنا") {
+
+      message.innerText =
+        "لسه محتاج تحط TMDB Token في الكود.";
+
+      return;
+
+    }
+
+    try {
+
+      message.innerText =
+        "جاري تحميل الأفلام والمسلسلات...";
+
+      const response = await fetch(
+        API_URL +
+        "/trending/all/week?language=ar-EG",
+        options
+      );
+
+      const data = await response.json();
+
+      showMovies(data.results);
+
+    } catch (error) {
+
+      console.log(error);
+
+      message.innerText =
+        "حصلت مشكلة في الاتصال بـ TMDB.";
+
+    }
+
+  }
+
+
+  let searchTimer;
+
+
+  searchInput.addEventListener(
+    "input",
+    function () {
+
+      clearTimeout(searchTimer);
+
+      const word =
+        searchInput.value.trim();
+
+
+      if (word.length === 0) {
+
+        loadPopular();
+
+        return;
+
+      }
+
+
+      searchTimer = setTimeout(
+        function () {
+
+          searchMovie(word);
+
+        },
+        500
+      );
+
+    }
+  );
+
+
+  async function searchMovie(word) {
+
+    try {
+
+      message.innerText =
+        "جاري البحث عن " + word + "...";
+
+
+      const url =
+        API_URL +
+        "/search/multi?query=" +
+        encodeURIComponent(word) +
+        "&language=ar-EG&include_adult=false";
+
+
+      const response =
+        await fetch(url, options);
+
+
+      const data =
+        await response.json();
+
+
+      const results
