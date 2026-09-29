@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>YoussefFlix</title>
+  <title>YoussefFlix | أفلام ومسلسلات</title>
 
   <style>
     * {
@@ -22,62 +23,104 @@
       background: #111;
       padding: 18px 7%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 20px;
+      justify-content: space-between;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .logo {
-      color: #e50914;
       font-size: 30px;
       font-weight: bold;
+      color: #e50914;
     }
 
     .logo span {
       color: white;
     }
 
-    #search {
-      padding: 12px 15px;
-      width: 320px;
+    .search-box {
+      display: flex;
+      width: 420px;
       max-width: 100%;
+    }
+
+    .search-box input {
+      flex: 1;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
       outline: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .search-box button {
+      background: #e50914;
+      color: white;
+      font-weight: bold;
+      border: none;
+      padding: 0 20px;
+      cursor: pointer;
+      border-radius: 6px 0 0 6px;
+    }
+
+    .search-box button:hover {
+      background: #ff2630;
     }
 
     .hero {
-      min-height: 380px;
+      min-height: 390px;
       display: flex;
       align-items: center;
-      padding: 50px 8%;
+      padding: 45px 8%;
       background:
-        linear-gradient(90deg, #141414, rgba(20,20,20,.55)),
+        linear-gradient(90deg, #141414 5%, rgba(20, 20, 20, 0.78) 50%, rgba(20, 20, 20, 0.15)),
         url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
       background-position: center;
     }
 
+    .hero-content {
+      max-width: 600px;
+    }
+
     .hero h1 {
       font-size: 48px;
-      margin: 0 0 10px;
+      margin: 0 0 15px;
     }
 
     .hero p {
-      font-size: 18px;
       color: #ddd;
-      max-width: 600px;
+      font-size: 18px;
       line-height: 1.8;
+    }
+
+    .hero button {
+      background: white;
+      color: #111;
+      padding: 13px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     main {
       padding: 35px 7%;
+      min-height: 450px;
+    }
+
+    h2 {
+      font-size: 26px;
     }
 
     #message {
-      color: #aaa;
-      margin-bottom: 25px;
+      color: #ccc;
+      margin-bottom: 22px;
+      font-size: 16px;
     }
 
     .movies {
@@ -90,12 +133,12 @@
       background: #222;
       border-radius: 8px;
       overflow: hidden;
-      transition: .2s;
+      transition: 0.2s;
     }
 
     .card:hover {
       transform: scale(1.04);
-      background: #333;
+      background: #303030;
     }
 
     .card img {
@@ -106,7 +149,7 @@
     }
 
     .info {
-      padding: 12px;
+      padding: 13px;
     }
 
     .info h3 {
@@ -122,44 +165,46 @@
 
     .button {
       display: block;
-      margin-top: 12px;
-      padding: 10px;
       text-align: center;
+      margin-top: 13px;
+      padding: 10px;
       background: #e50914;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
       font-weight: bold;
+      border-radius: 5px;
+    }
+
+    .button:hover {
+      background: #ff2630;
     }
 
     footer {
+      margin-top: 35px;
+      padding: 28px;
       text-align: center;
       background: #111;
-      color: #777;
-      padding: 25px;
-      margin-top: 35px;
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
     }
 
     @media (max-width: 600px) {
       header {
         flex-direction: column;
+        padding: 15px;
       }
 
-      #search {
+      .search-box {
         width: 100%;
+      }
+
+      .hero {
+        min-height: 340px;
       }
 
       .hero h1 {
         font-size: 34px;
-      }
-
-      .movies {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-
-      .card img {
-        height: 230px;
       }
     }
   </style>
@@ -167,186 +212,171 @@
 
 <body>
 
-<header>
+  <header>
+    <div class="logo">Youssef<span>Flix</span></div>
 
-  <div class="logo">
-    Youssef<span>Flix</span>
-  </div>
+    <div class="search-box">
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="اكتب اسم فيلم أو مسلسل..."
+      >
 
-  <input
-    id="search"
-    type="text"
-    placeholder="ابحث عن فيلم أو مسلسل..."
-    autocomplete="off"
-  >
+      <button onclick="searchMovie()">بحث</button>
+    </div>
+  </header>
 
-</header>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>أهلاً بك في YoussefFlix</h1>
 
-<section class="hero">
+      <p>
+        اكتب اسم أي فيلم أو مسلسل عربي أو أجنبي،
+        وسنبحث عنه داخل قاعدة بيانات الأفلام والمسلسلات.
+      </p>
 
-  <div>
+      <button onclick="goToSearch()">ابحث الآن</button>
+    </div>
+  </section>
 
-    <h1>أهلاً بك في YoussefFlix</h1>
+  <main id="searchSection">
+    <h2>نتائج البحث</h2>
 
-    <p>
-      ابحث عن أي فيلم أو مسلسل وشاهد معلوماته
-      وسنة الإنتاج والتقييم والصورة.
+    <p id="message">
+      اكتب اسم فيلم أو مسلسل في مربع البحث بالأعلى.
     </p>
 
-  </div>
+    <div class="movies" id="movies"></div>
+  </main>
 
-</section>
+  <footer>
+    <div>© 2026 YoussefFlix — تصميم يوسف نبيل</div>
+    <div>This product uses the TMDB API but is not endorsed or certified by TMDB.</div>
+  </footer>
 
-<main>
+  <script>
+    /* ================================
+       ضع مفتاح TMDB الخاص بك هنا فقط
+       ================================ */
 
-  <h2>الأفلام والمسلسلات</h2>
+    const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYmVhZmZhMzc3ZWNmMDc2OGIwMjYyY2E4MjA4ZmQ2MyIsIm5iZiI6MTc5MDY5ODQzNi41MTUsInN1YiI6IjZhYmJlM2M0ZTA4ZmE3NTg0YjNiZmI1YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V_LQKE3AL4H4PE52A8YUFbIj1owx3DGCLBdUXb05ZBM";
 
-  <p id="message">
-    جاري تحميل المحتوى...
-  </p>
+    const moviesBox = document.getElementById("movies");
+    const message = document.getElementById("message");
+    const searchInput = document.getElementById("searchInput");
 
-  <div class="movies" id="movies"></div>
+    function goToSearch() {
+      searchInput.focus();
 
-</main>
-
-<footer>
-  © 2026 YoussefFlix — تصميم يوسف نبيل
-</footer>
-
-
-<script>
-
-  /* =================================
-     حط TMDB Token هنا
-     ================================= */
-
-  const API_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYmVhZmZhMzc3ZWNmMDc2OGIwMjYyY2E4MjA4ZmQ2MyIsIm5iZiI6MTc5MDY5ODQzNi41MTUsInN1YiI6IjZhYmJlM2M0ZTA4ZmE3NTg0YjNiZmI1YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V_LQKE3AL4H4PE52A8YUFbIj1owx3DGCLBdUXb05ZBM";
-
-
-  const API_URL = "https://api.themoviedb.org/3";
-
-  const IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-
-
-  const options = {
-
-    method: "GET",
-
-    headers: {
-
-      accept: "application/json",
-
-      Authorization: "Bearer " + API_TOKEN
-
+      document.getElementById("searchSection").scrollIntoView({
+        behavior: "smooth"
+      });
     }
 
-  };
+    async function searchMovie() {
+      const movieName = searchInput.value.trim();
 
-
-  const moviesBox =
-    document.getElementById("movies");
-
-  const message =
-    document.getElementById("message");
-
-  const searchInput =
-    document.getElementById("search");
-
-
-  async function loadPopular() {
-
-    if (API_TOKEN === "ضع_التوكن_هنا") {
-
-      message.innerText =
-        "لسه محتاج تحط TMDB Token في الكود.";
-
-      return;
-
-    }
-
-    try {
-
-      message.innerText =
-        "جاري تحميل الأفلام والمسلسلات...";
-
-      const response = await fetch(
-        API_URL +
-        "/trending/all/week?language=ar-EG",
-        options
-      );
-
-      const data = await response.json();
-
-      showMovies(data.results);
-
-    } catch (error) {
-
-      console.log(error);
-
-      message.innerText =
-        "حصلت مشكلة في الاتصال بـ TMDB.";
-
-    }
-
-  }
-
-
-  let searchTimer;
-
-
-  searchInput.addEventListener(
-    "input",
-    function () {
-
-      clearTimeout(searchTimer);
-
-      const word =
-        searchInput.value.trim();
-
-
-      if (word.length === 0) {
-
-        loadPopular();
-
+      if (movieName === "") {
+        message.innerText = "اكتب اسم فيلم أو مسلسل الأول.";
+        moviesBox.innerHTML = "";
         return;
-
       }
 
+      if (API_KEY === "ضع_مفتاح_TMDB_هنا") {
+        message.innerText = "ضع TMDB API Key في الكود الأول ثم جرّب مرة ثانية.";
+        moviesBox.innerHTML = "";
+        return;
+      }
 
-      searchTimer = setTimeout(
-        function () {
-
-          searchMovie(word);
-
-        },
-        500
-      );
-
-    }
-  );
-
-
-  async function searchMovie(word) {
-
-    try {
-
-      message.innerText =
-        "جاري البحث عن " + word + "...";
-
+      message.innerText = "جاري البحث عن: " + movieName;
+      moviesBox.innerHTML = "";
 
       const url =
-        API_URL +
-        "/search/multi?query=" +
-        encodeURIComponent(word) +
-        "&language=ar-EG&include_adult=false";
+        "https://api.themoviedb.org/3/search/multi?api_key=" +
+        API_KEY +
+        "&language=ar-EG&query=" +
+        encodeURIComponent(movieName);
 
+      try {
+        const response = await fetch(url);
 
-      const response =
-        await fetch(url, options);
+        if (!response.ok) {
+          throw new Error("API Error");
+        }
 
+        const data = await response.json();
 
-      const data =
-        await response.json();
+        const results = data.results.filter(item =>
+          item.media_type === "movie" || item.media_type === "tv"
+        );
 
+        if (results.length === 0) {
+          message.innerText = "ملقيناش نتائج بالاسم ده.";
+          return;
+        }
 
-      const results
+        message.innerText = "نتائج البحث عن: " + movieName;
+
+        results.forEach(item => {
+          const title = item.title || item.name || "بدون اسم";
+
+          const date =
+            item.release_date ||
+            item.first_air_date ||
+            "";
+
+          const year = date ? date.substring(0, 4) : "غير معروف";
+
+          const type =
+            item.media_type === "movie"
+              ? "فيلم"
+              : "مسلسل";
+
+          const image = item.poster_path
+            ? "https://image.tmdb.org/t/p/w500" + item.poster_path
+            : "https://via.placeholder.com/500x750?text=No+Image";
+
+          const officialSearchLink =
+            "https://www.google.com/search?q=" +
+            encodeURIComponent(title + " مشاهدة رسمية");
+
+          moviesBox.innerHTML += `
+            <div class="card">
+              <img src="${image}" alt="${title}">
+
+              <div class="info">
+                <h3>${title}</h3>
+
+                <p>${type}</p>
+
+                <p>سنة الإنتاج: ${year}</p>
+
+                <a
+                  class="button"
+                  href="${officialSearchLink}"
+                  target="_blank"
+                >
+                  ابحث عن المشاهدة الرسمية
+                </a>
+              </div>
+            </div>
+          `;
+        });
+
+      } catch (error) {
+        message.innerText =
+          "حصلت مشكلة. تأكد أن API Key صحيح ثم جرّب مرة ثانية.";
+
+        console.log(error);
+      }
+    }
+
+    searchInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        searchMovie();
+      }
+    });
+  </script>
+
+</body>
+</html>
