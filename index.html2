@@ -1,0 +1,1137 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>War for Westeros — Offline</title><style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#070b12;color:#eee;font-family:Arial,sans-serif}
+body{user-select:none;-webkit-user-select:none;touch-action:manipulation}
+button{font-family:inherit}
+.hidden{display:none!important}
+
+:root{
+ --bg:#070b12;
+ --panel:#101722;
+ --panel2:#151e2b;
+ --border:#293548;
+ --gold:#f59e0b;
+ --gold2:#fbbf24;
+ --red:#dc2626;
+ --green:#22c55e;
+ --blue:#38bdf8;
+}
+
+header{
+ height:64px;background:#0d131d;border-bottom:1px solid #263142;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:8px 16px;position:sticky;top:0;z-index:20;
+ box-shadow:0 5px 20px #0008
+}
+
+.logo{display:flex;align-items:center;gap:10px}
+.logoIcon{
+ width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+ background:#b45309;border:2px solid #fbbf24;font-size:21px
+}
+.title{font-family:Georgia,serif;font-weight:bold;color:var(--gold2);letter-spacing:1px}
+.subtitle{font-size:10px;color:#7d8999;margin-top:2px}
+
+.stats{display:flex;align-items:center;gap:7px}
+.stat{
+ background:#151e2b;border:1px solid #2b3748;border-radius:8px;
+ padding:7px 10px;font-size:12px
+}
+.gold{color:#fbbf24}.food{color:#34d399}.turn{color:#38bdf8}
+
+button{
+ border:0;cursor:pointer;transition:.15s;
+}
+button:active{transform:scale(.96)}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+main{
+ width:100%;max-width:1200px;margin:auto;padding:18px;
+ min-height:calc(100vh - 64px)
+}
+
+.panel{
+ background:#101722ee;border:1px solid #263142;border-radius:14px;
+ box-shadow:0 15px 50px #0008
+}
+
+/* HOUSE SELECT */
+
+.houseSelect{padding:28px}
+.hero{text-align:center;margin-bottom:25px}
+.hero h1{
+ font-family:Georgia,serif;color:#fbbf24;font-size:34px;margin:0 0 8px
+}
+.hero p{color:#8994a5;margin:0;font-size:14px}
+
+.houseGrid{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:14px
+}
+.house{
+ padding:18px;border:2px solid #293548;border-radius:13px;
+ background:#151e2b;cursor:pointer;transition:.2s
+}
+.house:hover{transform:translateY(-3px);border-color:#f59e0b}
+.houseTop{display:flex;align-items:center;gap:12px}
+.emblem{
+ width:55px;height:55px;border-radius:50%;display:grid;place-items:center;
+ font-size:29px;border:2px solid
+}
+.house h2{margin:0;font-family:Georgia,serif;font-size:20px}
+.house p{margin:3px 0;color:#8b96a7;font-size:12px}
+.trait{
+ margin-top:13px;padding:9px;background:#0b111a;border-radius:8px;
+ color:#9ca7b6;font-size:11px
+}
+.trait b{color:#34d399}
+
+/* CAMPAIGN */
+
+.campaign{
+ display:grid;grid-template-columns:2fr 1fr;gap:14px
+}
+.mapPanel{padding:14px}
+.panelTitle{
+ display:flex;justify-content:space-between;align-items:center;
+ margin-bottom:10px
+}
+.panelTitle h2{
+ margin:0;color:#fbbf24;font-family:Georgia,serif;font-size:18px
+}
+.panelTitle span{font-size:11px;color:#788496}
+
+.map{
+ position:relative;height:500px;border:1px solid #263142;border-radius:10px;
+ overflow:hidden;background:
+ radial-gradient(circle,#263142 1px,transparent 1px);
+ background-size:18px 18px;background-color:#080d15
+}
+
+.map svg{position:absolute;width:100%;height:100%;inset:0}
+
+.region{
+ position:absolute;transform:translate(-50%,-50%);
+ width:130px;padding:9px;text-align:center;
+ background:#151e2b;border:2px solid #536174;border-radius:12px;
+ cursor:pointer;z-index:3;box-shadow:0 8px 20px #0008
+}
+.region:hover{transform:translate(-50%,-50%) scale(1.05)}
+.region.active{border-color:#fbbf24;box-shadow:0 0 18px #f59e0b55}
+.region .icon{font-size:23px}
+.region .name{font-family:Georgia,serif;font-weight:bold;font-size:12px}
+.region .owner{font-size:9px;color:#9ca3af;margin-top:3px}
+
+.side{padding:16px;display:flex;flex-direction:column;gap:14px}
+.side h3{margin:0;color:#fbbf24;font-family:Georgia,serif}
+.desc{font-size:11px;color:#8c98a8;line-height:1.5}
+
+.roster{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:6px
+}
+.rosterBox{
+ background:#151e2b;border:1px solid #293548;border-radius:8px;
+ padding:9px;text-align:center;font-size:10px;color:#8994a5
+}
+.rosterBox strong{display:block;color:#fff;font-size:17px;margin-top:3px}
+
+.recruit{display:flex;flex-direction:column;gap:7px}
+.recruitRow{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:9px;background:#151e2b;border:1px solid #293548;border-radius:8px;
+ font-size:11px
+}
+.recruitRow small{display:block;color:#778397;margin-top:3px}
+.recruitBtn{
+ background:#374151;color:#fbbf24;padding:7px 9px;border-radius:6px;
+ font-size:10px;font-weight:bold
+}
+.attack{
+ width:100%;padding:13px;background:#b91c1c;color:#fff;
+ border-radius:8px;font-family:Georgia,serif;font-weight:bold
+}
+.attack:hover{background:#dc2626}
+
+/* BATTLE */
+
+.battle{max-width:1050px;margin:auto}
+.hud{
+ display:flex;justify-content:space-between;align-items:center;
+ background:#101722;border:1px solid #293548;border-radius:12px 12px 0 0;
+ padding:10px 13px;font-size:12px
+}
+.badge{padding:5px 8px;border-radius:5px;font-weight:bold;font-size:10px}
+.playerBadge{background:#172554;color:#93c5fd}
+.enemyBadge{background:#450a0a;color:#fca5a5}
+.battleTitle{color:#fbbf24;font-family:Georgia,serif;font-weight:bold}
+
+.canvasWrap{
+ position:relative;background:#172514;border:1px solid #293548;
+ border-top:0;border-radius:0 0 12px 12px;overflow:hidden
+}
+canvas{width:100%;height:auto;display:block;background:#1d2d19}
+
+.controls{
+ position:absolute;left:10px;right:10px;bottom:10px;
+ display:flex;justify-content:space-between;gap:8px;pointer-events:none
+}
+.controlGroup{
+ display:flex;gap:5px;background:#0b111de8;border:1px solid #374151;
+ padding:5px;border-radius:8px;pointer-events:auto
+}
+.control{
+ background:#1f2937;color:#e5e7eb;border:1px solid #374151;
+ border-radius:5px;padding:6px 8px;font-size:10px
+}
+.control:hover{background:#374151}
+.charge{background:#b91c1c;font-weight:bold}
+
+.help{text-align:center;color:#667386;font-size:10px;margin-top:7px}
+
+/* MODAL */
+
+.modal{
+ position:fixed;inset:0;background:#000b;backdrop-filter:blur(4px);
+ z-index:100;display:grid;place-items:center;padding:15px
+}
+.result{
+ width:min(420px,100%);background:#101722;border:2px solid #f59e0b;
+ border-radius:14px;padding:25px;text-align:center;box-shadow:0 20px 70px #000
+}
+.resultIcon{font-size:55px}
+.result h2{font-family:Georgia,serif;color:#fbbf24}
+.result p{color:#a4afbd;font-size:13px;line-height:1.5}
+.resultStats{
+ background:#151e2b;border:1px solid #293548;border-radius:8px;
+ padding:12px;margin:15px 0;font-size:12px
+}
+.resultStats div{display:flex;justify-content:space-between;margin:5px}
+.returnBtn{
+ width:100%;padding:12px;background:#d97706;color:#090d13;
+ font-family:Georgia,serif;font-weight:bold;border-radius:7px
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+ header{height:auto;min-height:62px;padding:7px 9px}
+ .title{font-size:13px}
+ .subtitle{font-size:8px}
+ .logoIcon{width:34px;height:34px;font-size:17px}
+ .stats{gap:3px}
+ .stat{padding:5px 6px;font-size:9px}
+ .stats button{font-size:9px;padding:6px}
+ main{padding:8px}
+ .houseSelect{padding:18px 12px}
+ .hero h1{font-size:24px}
+ .hero p{font-size:11px}
+ .houseGrid{grid-template-columns:1fr}
+ .campaign{grid-template-columns:1fr}
+ .map{height:430px}
+ .region{width:105px;padding:7px}
+ .region .icon{font-size:19px}
+ .region .name{font-size:10px}
+ .region .owner{font-size:8px}
+ .battleTitle{display:none}
+ .controls{flex-direction:column;align-items:flex-start}
+ .controlGroup{max-width:100%;overflow-x:auto}
+ .control{white-space:nowrap}
+}
+
+@media(max-width:450px){
+ .stats .food{display:none}
+ .stat{font-size:8px}
+ .map{height:390px}
+ .region{width:92px}
+}
+</style></head><body><header>
+ <div class="logo">
+  <div class="logoIcon">⚔️</div>
+  <div>
+   <div class="title">WAR FOR WESTEROS</div>
+   <div class="subtitle">OFFLINE TACTICAL STRATEGY</div>
+  </div>
+ </div> <div id="stats" class="stats hidden">
+  <div class="stat gold">🪙 <span id="gold">1000</span></div>
+  <div class="stat food">🌾 <span id="food">500</span></div>
+  <div class="stat turn">🏰 <span id="turn">1</span></div>
+  <button onclick="game.endTurn()" style="background:#d97706;color:#080b10;padding:7px 9px;border-radius:6px;font-weight:bold;font-size:10px">END TURN</button>
+ </div>
+</header><main><!-- HOUSE SELECT --><section id="houseScreen" class="panel houseSelect">
+ <div class="hero">
+  <h1>CHOOSE YOUR NOBLE HOUSE</h1>
+  <p>Command your army, conquer Westeros and fight for the Iron Throne.</p>
+ </div> <div class="houseGrid">  <div class="house" onclick="game.selectHouse('stark')">
+   <div class="houseTop">
+    <div class="emblem" style="background:#334155;border-color:#cbd5e1">🐺</div>
+    <div><h2>House Stark</h2><p>Winterfell • Jon Snow</p></div>
+   </div>
+   <div class="trait"><b>Trait:</b> +20% Infantry Defense and cold resistance.</div>
+  </div>  <div class="house" onclick="game.selectHouse('lannister')">
+   <div class="houseTop">
+    <div class="emblem" style="background:#451a03;border-color:#f59e0b">🦁</div>
+    <div><h2 style="color:#f59e0b">House Lannister</h2><p>Casterly Rock • Jaime Lannister</p></div>
+   </div>
+   <div class="trait"><b>Trait:</b> +50% Gold income per turn.</div>
+  </div>  <div class="house" onclick="game.selectHouse('targaryen')">
+   <div class="houseTop">
+    <div class="emblem" style="background:#450a0a;border-color:#ef4444">🐉</div>
+    <div><h2 style="color:#ef4444">House Targaryen</h2><p>Dragonstone • Daenerys Targaryen</p></div>
+   </div>
+   <div class="trait"><b>Trait:</b> +25% attack power and dragon support.</div>
+  </div>  <div class="house" onclick="game.selectHouse('baratheon')">
+   <div class="houseTop">
+    <div class="emblem" style="background:#422006;border-color:#eab308">🦌</div>
+    <div><h2 style="color:#eab308">House Baratheon</h2><p>Storm's End • Stannis Baratheon</p></div>
+   </div>
+   <div class="trait"><b>Trait:</b> +30% morale and armored cavalry.</div>
+  </div> </div>
+</section><!-- CAMPAIGN --><section id="campaignScreen" class="campaign hidden"> <div class="panel mapPanel">
+  <div class="panelTitle">
+   <h2>MAP OF WESTEROS</h2>
+   <span>Select a region</span>
+  </div>  <div class="map">   <svg viewBox="0 0 1000 700" preserveAspectRatio="none">
+    <g stroke="#475569" stroke-width="4" stroke-dasharray="8 8" opacity=".65">
+     <line x1="500" y1="120" x2="700" y2="270"/>
+     <line x1="500" y1="120" x2="250" y2="300"/>
+     <line x1="500" y1="120" x2="500" y2="480"/>
+     <line x1="250" y1="300" x2="500" y2="480"/>
+     <line x1="700" y1="270" x2="500" y2="480"/>
+     <line x1="500" y1="480" x2="250" y2="600"/>
+    </g>
+   </svg>   <div class="region" id="winterfell" style="left:50%;top:16%" onclick="game.selectRegion('winterfell')">
+    <div class="icon">🏰</div><div class="name">Winterfell</div>
+    <div class="owner" id="owner-winterfell">Owner: STARK</div>
+   </div>   <div class="region" id="eyrie" style="left:70%;top:39%" onclick="game.selectRegion('eyrie')">
+    <div class="icon">🏔️</div><div class="name">The Eyrie</div>
+    <div class="owner" id="owner-eyrie">Owner: ARRYN</div>
+   </div>   <div class="region" id="casterly" style="left:25%;top:43%" onclick="game.selectRegion('casterly')">
+    <div class="icon">🦁</div><div class="name">Casterly Rock</div>
+    <div class="owner" id="owner-casterly">Owner: LANNISTER</div>
+   </div>   <div class="region" id="kingslanding" style="left:50%;top:66%" onclick="game.selectRegion('kingslanding')">
+    <div class="icon">👑</div><div class="name">King's Landing</div>
+    <div class="owner" id="owner-kingslanding">Owner: BARATHEON</div>
+   </div>   <div class="region" id="highgarden" style="left:25%;top:84%" onclick="game.selectRegion('highgarden')">
+    <div class="icon">🌹</div><div class="name">Highgarden</div>
+    <div class="owner" id="owner-highgarden">Owner: TYRELL</div>
+   </div>  </div>
+ </div> <div class="panel side">  <div>
+   <h3 id="regionName">Winterfell</h3>
+   <p class="desc" id="regionDesc">Select a region to manage your army.</p>
+  </div>  <div>
+   <div style="font-size:10px;color:#9ca3af;margin-bottom:6px">YOUR ARMY</div>
+   <div class="roster">
+    <div class="rosterBox">⚔️ INFANTRY<strong id="infantry">20</strong></div>
+    <div class="rosterBox">🏹 ARCHERS<strong id="archers">10</strong></div>
+    <div class="rosterBox">🐴 CAVALRY<strong id="cavalry">5</strong></div>
+   </div>
+  </div>  <div>
+   <div style="font-size:10px;color:#9ca3af;margin-bottom:6px">RECRUIT REINFORCEMENTS</div>   <div class="recruit"><div class="recruitRow">
+ <div>⚔️ Heavy Infantry<small>+5 • 50 Gold</small></div>
+ <button class="recruitBtn" onclick="game.recruit('infantry')">RECRUIT</button>
+</div>
+
+<div class="recruitRow">
+ <div>🏹 Bowmen<small>+5 • 60 Gold</small></div>
+ <button class="recruitBtn" onclick="game.recruit('archers')">RECRUIT</button>
+</div>
+
+<div class="recruitRow">
+ <div>🐴 Cavalry<small>+3 • 100 Gold</small></div>
+ <button class="recruitBtn" onclick="game.recruit('cavalry')">RECRUIT</button>
+</div>
+
+   </div>
+  </div><button id="attackBtn" class="attack" onclick="game.startBattle()">⚔️ MARCH TO BATTLE</button>
+
+ </div>
+</section><!-- BATTLE --><section id="battleScreen" class="battle hidden"> <div class="hud">
+  <div>
+   <span id="playerBadge" class="badge playerBadge">STARK</span>
+   YOUR ARMY:
+   <b id="playerCount" style="color:#34d399">0</b>
+  </div>  <div class="battleTitle">REAL-TIME TACTICAL BATTLE</div>  <div>
+   ENEMY:
+   <b id="enemyCount" style="color:#f87171">0</b>
+   <span id="enemyBadge" class="badge enemyBadge">LANNISTER</span>
+  </div>
+ </div> <div class="canvasWrap">
+  <canvas id="battleCanvas" width="1000" height="560"></canvas>  <div class="controls">
+   <div class="controlGroup">
+    <button class="control" onclick="game.selectUnits('all')">ALL</button>
+    <button class="control" onclick="game.selectUnits('infantry')">⚔️ INF</button>
+    <button class="control" onclick="game.selectUnits('archers')">🏹 ARCH</button>
+    <button class="control" onclick="game.selectUnits('cavalry')">🐴 CAV</button>
+   </div>   <div class="controlGroup">
+    <button class="control charge" onclick="game.allCharge()">⚔️ ALL CHARGE!</button>
+   </div>
+  </div>
+ </div> <div class="help">
+  Tap a unit to select it. Tap the battlefield to move selected units. Use ALL CHARGE to attack.
+ </div></section></main><!-- RESULT --><div id="resultModal" class="modal hidden">
+ <div class="result">
+  <div id="resultIcon" class="resultIcon">🏆</div>
+  <h2 id="resultTitle">VICTORY!</h2>
+  <p id="resultText"></p>  <div class="resultStats">
+   <div><span>Remaining Army</span><b id="resultSurvivors">0</b></div>
+   <div><span>Enemy Remaining</span><b id="resultEnemy">0</b></div>
+   <div><span>Gold</span><b id="resultGold" style="color:#fbbf24">+0</b></div>
+  </div><button class="returnBtn" onclick="game.closeBattle()">RETURN TO CAMPAIGN</button>
+
+ </div>
+</div><script>
+/* =========================================================
+   OFFLINE AUDIO
+========================================================= */
+
+class Sound{
+ constructor(){this.ctx=null}
+ init(){
+  if(!this.ctx){
+   const C=window.AudioContext||window.webkitAudioContext;
+   if(C)this.ctx=new C();
+  }
+ }
+ tone(freq,duration,type="triangle",volume=.04){
+  if(!this.ctx)return;
+  const o=this.ctx.createOscillator();
+  const g=this.ctx.createGain();
+  const n=this.ctx.currentTime;
+  o.type=type;
+  o.frequency.setValueAtTime(freq,n);
+  g.gain.setValueAtTime(volume,n);
+  g.gain.exponentialRampToValueAtTime(.001,n+duration);
+  o.connect(g);g.connect(this.ctx.destination);
+  o.start();o.stop(n+duration);
+ }
+ hit(){this.tone(130,.08,"square",.035)}
+ arrow(){this.tone(700,.06,"triangle",.018)}
+ charge(){this.tone(90,.3,"sawtooth",.05)}
+ victory(){this.tone(500,.12);setTimeout(()=>this.tone(700,.2),120)}
+ defeat(){this.tone(180,.3,"sawtooth",.04)}
+}
+
+const sound=new Sound();
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+const HOUSES={
+ stark:{
+  name:"STARK",color:"#cbd5e1",accent:"#f8fafc",
+  bonusAttack:1,bonusDefense:1.2,gold:0
+ },
+ lannister:{
+  name:"LANNISTER",color:"#ef4444",accent:"#fbbf24",
+  bonusAttack:1,bonusDefense:1,gold:500
+ },
+ targaryen:{
+  name:"TARGARYEN",color:"#991b1b",accent:"#f87171",
+  bonusAttack:1.25,bonusDefense:1,gold:0
+ },
+ baratheon:{
+  name:"BARATHEON",color:"#eab308",accent:"#fef08a",
+  bonusAttack:1,bonusDefense:1,gold:0
+ }
+};
+
+const REGIONS={
+ winterfell:{name:"Winterfell",owner:"stark",power:45},
+ eyrie:{name:"The Eyrie",owner:"arryn",power:50},
+ casterly:{name:"Casterly Rock",owner:"lannister",power:60},
+ kingslanding:{name:"King's Landing",owner:"baratheon",power:80},
+ highgarden:{name:"Highgarden",owner:"tyrell",power:40}
+};
+
+
+/* =========================================================
+   TACTICAL UNIT
+========================================================= */
+
+class Unit{
+
+ constructor(x,y,team,type,house,engine){
+  this.x=x;this.y=y;
+  this.team=team;
+  this.type=type;
+  this.house=house;
+  this.engine=engine;
+
+  this.target=null;
+  this.moveTarget=null;
+  this.cool=0;
+
+  if(type==="infantry"){
+   this.maxHp=100;
+   this.speed=1.25;
+   this.range=25;
+   this.damage=12;
+  }
+
+  if(type==="archers"){
+   this.maxHp=65;
+   this.speed=1;
+   this.range=190;
+   this.damage=17;
+  }
+
+  if(type==="cavalry"){
+   this.maxHp=145;
+   this.speed=2.35;
+   this.range=28;
+   this.damage=25;
+  }
+
+  if(team==="player"){
+   this.damage*=HOUSES[engine.player].bonusAttack;
+   this.maxHp*=HOUSES[engine.player].bonusDefense;
+  }
+
+  this.hp=this.maxHp;
+ }
+
+ takeDamage(dmg){
+  this.hp-=dmg;
+  sound.hit();
+ }
+
+ update(){
+  if(this.hp<=0)return;
+
+  if(this.cool>0)this.cool--;
+
+  if(this.team==="enemy" && (!this.target || this.target.hp<=0)){
+   const players=this.engine.units.filter(u=>u.team==="player"&&u.hp>0);
+   if(players.length){
+    this.target=players[Math.floor(Math.random()*players.length)];
+   }
+  }
+
+  if(this.target && this.target.hp>0){
+
+   const dx=this.target.x-this.x;
+   const dy=this.target.y-this.y;
+   const dist=Math.hypot(dx,dy);
+
+   if(dist<=this.range){
+
+    if(this.cool<=0){
+
+     if(this.type==="archers"){
+      this.engine.projectiles.push({
+       x:this.x,y:this.y,
+       tx:this.target.x,ty:this.target.y,
+       team:this.team,
+       damage:this.damage,
+       life:60
+      });
+      sound.arrow();
+      this.cool=65;
+     }else{
+      this.target.takeDamage(this.damage);
+      this.cool=this.type==="cavalry"?28:38;
+     }
+
+    }
+
+   }else{
+    this.move(dx,dy);
+   }
+
+  }else if(this.moveTarget){
+
+   const dx=this.moveTarget.x-this.x;
+   const dy=this.moveTarget.y-this.y;
+   const dist=Math.hypot(dx,dy);
+
+   if(dist>5)this.move(dx,dy);
+   else this.moveTarget=null;
+  }
+ }
+
+ move(dx,dy){
+  const d=Math.hypot(dx,dy)||1;
+  this.x+=(dx/d)*this.speed;
+  this.y+=(dy/d)*this.speed;
+
+  this.x=Math.max(12,Math.min(this.engine.canvas.width-12,this.x));
+  this.y=Math.max(12,Math.min(this.engine.canvas.height-12,this.y));
+ }
+
+ draw(ctx){
+
+  ctx.save();
+
+  let r=this.type==="cavalry"?10:7;
+
+  ctx.fillStyle=this.team==="player"?this.house.color:"#dc2626";
+  ctx.strokeStyle=this.house.accent||"#fff";
+  ctx.lineWidth=1.5;
+
+  ctx.beginPath();
+
+  if(this.type==="archers"){
+   ctx.rect(this.x-6,this.y-6,12,12);
+  }else{
+   ctx.arc(this.x,this.y,r,0,Math.PI*2);
+  }
+
+  ctx.fill();
+  ctx.stroke();
+
+  if(this.engine.selected.includes(this)){
+   ctx.strokeStyle="#fbbf24";
+   ctx.lineWidth=2;
+   ctx.beginPath();
+   ctx.arc(this.x,this.y,r+5,0,Math.PI*2);
+   ctx.stroke();
+  }
+
+  const hp=Math.max(0,this.hp/this.maxHp);
+  ctx.fillStyle="#111827";
+  ctx.fillRect(this.x-9,this.y-15,18,3);
+  ctx.fillStyle=hp>.5?"#22c55e":"#ef4444";
+  ctx.fillRect(this.x-9,this.y-15,18*hp,3);
+
+  ctx.restore();
+ }
+}
+
+
+/* =========================================================
+   BATTLE ENGINE
+========================================================= */
+
+class Battle{
+
+ constructor(canvas,player,enemy,roster,power,onEnd){
+  this.canvas=canvas;
+  this.ctx=canvas.getContext("2d");
+  this.player=player;
+  this.enemy=enemy;
+  this.roster=roster;
+  this.power=power;
+  this.onEnd=onEnd;
+
+  this.units=[];
+  this.projectiles=[];
+  this.selected=[];
+  this.running=false;
+  this.finished=false;
+
+  this.spawn();
+  this.bind();
+ }
+
+ spawn(){
+
+  const ph=HOUSES[this.player];
+  const eh=HOUSES[this.enemy]||{
+   name:this.enemy.toUpperCase(),color:"#b91c1c",accent:"#fca5a5",
+   bonusAttack:1,bonusDefense:1
+  };
+
+  let y=100;
+
+  for(let i=0;i<Math.min(this.roster.infantry,35);i++){
+   this.units.push(new Unit(
+    100+(i%5)*22,
+    y+Math.floor(i/5)*22,
+    "player","infantry",ph,this
+   ));
+  }
+
+  for(let i=0;i<Math.min(this.roster.archers,25);i++){
+   this.units.push(new Unit(
+    60+(i%5)*22,
+    360+Math.floor(i/5)*20,
+    "player","archers",ph,this
+   ));
+  }
+
+  for(let i=0;i<Math.min(this.roster.cavalry,15);i++){
+   this.units.push(new Unit(
+    150+(i%5)*25,
+    60+Math.floor(i/5)*28,
+    "player","cavalry",ph,this
+   ));
+  }
+
+  const count=Math.max(12,Math.min(45,Math.floor(this.power/2)));
+
+  for(let i=0;i<count;i++){
+
+   let type=i%3===0?"cavalry":(i%2===0?"archers":"infantry");
+
+   this.units.push(new Unit(
+    this.canvas.width-100-Math.random()*70,
+    60+Math.random()*(this.canvas.height-120),
+    "enemy",
+    type,
+    eh,
+    this
+   ));
+  }
+ }
+
+ bind(){
+
+  this.canvas.oncontextmenu=e=>e.preventDefault();
+
+  const getPos=e=>{
+   const rect=this.canvas.getBoundingClientRect();
+   return {
+    x:(e.clientX-rect.left)*this.canvas.width/rect.width,
+    y:(e.clientY-rect.top)*this.canvas.height/rect.height
+   };
+  };
+
+  this.canvas.addEventListener("mousedown",e=>{
+   sound.init();
+   const p=getPos(e);
+
+   if(e.button===0)this.handleSelect(p.x,p.y);
+   if(e.button===2)this.command(p.x,p.y);
+  });
+
+  this.canvas.addEventListener("touchstart",e=>{
+   e.preventDefault();
+   sound.init();
+
+   const t=e.touches[0];
+   const rect=this.canvas.getBoundingClientRect();
+
+   const x=(t.clientX-rect.left)*this.canvas.width/rect.width;
+   const y=(t.clientY-rect.top)*this.canvas.height/rect.height;
+
+   this.handleTouch(x,y);
+  },{passive:false});
+ }
+
+ handleTouch(x,y){
+
+  const enemy=this.units.find(u=>
+   u.team==="enemy"&&Math.hypot(u.x-x,u.y-y)<18
+  );
+
+  if(enemy){
+   this.selected.forEach(u=>u.target=enemy);
+   return;
+  }
+
+  const player=this.units.find(u=>
+   u.team==="player"&&Math.hypot(u.x-x,u.y-y)<18
+  );
+
+  if(player){
+   this.selected=[player];
+  }else{
+   this.selected.forEach((u,i)=>{
+    u.target=null;
+    u.moveTarget={
+     x:x+(i%5)*12-24,
+     y:y+Math.floor(i/5)*12-24
+    };
+   });
+  }
+ }
+
+ handleSelect(x,y){
+
+  const unit=this.units.find(u=>
+   u.team==="player"&&Math.hypot(u.x-x,u.y-y)<18
+  );
+
+  this.selected=unit?[unit]:[];
+ }
+
+ command(x,y){
+
+  const enemy=this.units.find(u=>
+   u.team==="enemy"&&Math.hypot(u.x-x,u.y-y)<25
+  );
+
+  if(enemy){
+   this.selected.forEach(u=>u.target=enemy);
+  }else{
+   const list=this.selected.length?this.selected:this.units.filter(u=>u.team==="player");
+
+   list.forEach((u,i)=>{
+    u.target=null;
+    u.moveTarget={
+     x:x+(i%6)*14-35,
+     y:y+Math.floor(i/6)*14-20
+    };
+   });
+  }
+ }
+
+ allCharge(){
+
+  const enemies=this.units.filter(u=>u.team==="enemy"&&u.hp>0);
+
+  if(!enemies.length)return;
+
+  this.units.filter(u=>u.team==="player").forEach(u=>{
+
+   let closest=enemies[0];
+   let distance=Infinity;
+
+   enemies.forEach(e=>{
+    const d=Math.hypot(e.x-u.x,e.y-u.y);
+    if(d<distance){
+     distance=d;
+     closest=e;
+    }
+   });
+
+   u.target=closest;
+  });
+
+  sound.charge();
+ }
+
+ selectType(type){
+
+  if(type==="all"){
+   this.selected=this.units.filter(u=>u.team==="player");
+  }else{
+   this.selected=this.units.filter(
+    u=>u.team==="player"&&u.type===type
+   );
+  }
+ }
+
+ start(){
+  this.running=true;
+  this.loop();
+ }
+
+ stop(){
+  this.running=false;
+ }
+
+ loop(){
+
+  if(!this.running)return;
+
+  this.update();
+  this.draw();
+
+  requestAnimationFrame(()=>this.loop());
+ }
+
+ update(){
+
+  this.units.forEach(u=>u.update());
+
+  for(let i=this.projectiles.length-1;i>=0;i--){
+
+   const p=this.projectiles[i];
+
+   const dx=p.tx-p.x;
+   const dy=p.ty-p.y;
+   const d=Math.hypot(dx,dy)||1;
+
+   p.x+=(dx/d)*7;
+   p.y+=(dy/d)*7;
+   p.life--;
+
+   const target=this.units.find(u=>
+    u.team!==p.team&&u.hp>0&&Math.hypot(u.x-p.x,u.y-p.y)<12
+   );
+
+   if(target){
+    target.takeDamage(p.damage);
+    p.life=0;
+   }
+
+   if(p.life<=0)this.projectiles.splice(i,1);
+  }
+
+  this.units=this.units.filter(u=>u.hp>0);
+
+  const players=this.units.filter(u=>u.team==="player");
+  const enemies=this.units.filter(u=>u.team==="enemy");
+
+  document.getElementById("playerCount").textContent=players.length;
+  document.getElementById("enemyCount").textContent=enemies.length;
+
+  if(!players.length||!enemies.length){
+   this.finished=true;
+   this.stop();
+
+   this.onEnd(
+    players.length>0,
+    players.length,
+    enemies.length
+   );
+  }
+ }
+
+ draw(){
+
+  const c=this.ctx;
+  const w=this.canvas.width;
+  const h=this.canvas.height;
+
+  c.fillStyle="#20351b";
+  c.fillRect(0,0,w,h);
+
+  /* battlefield stripes */
+  c.strokeStyle="#294522";
+  c.lineWidth=1;
+
+  for(let x=0;x<w;x+=40){
+   c.beginPath();
+   c.moveTo(x,0);
+   c.lineTo(x,h);
+   c.stroke();
+  }
+
+  for(let y=0;y<h;y+=40){
+   c.beginPath();
+   c.moveTo(0,y);
+   c.lineTo(w,y);
+   c.stroke();
+  }
+
+  /* center line */
+  c.strokeStyle="#64748b55";
+  c.setLineDash([10,10]);
+  c.beginPath();
+  c.moveTo(w/2,0);
+  c.lineTo(w/2,h);
+  c.stroke();
+  c.setLineDash([]);
+
+  this.units.forEach(u=>u.draw(c));
+
+  this.projectiles.forEach(p=>{
+   c.strokeStyle="#fef08a";
+   c.lineWidth=2;
+
+   c.beginPath();
+   c.moveTo(p.x,p.y);
+   c.lineTo(p.x-(p.tx-p.x)*.05,p.y-(p.ty-p.y)*.05);
+   c.stroke();
+  });
+ }
+}
+
+
+/* =========================================================
+   GAME CONTROLLER
+========================================================= */
+
+class Game{
+
+ constructor(){
+
+  this.house="stark";
+  this.gold=1000;
+  this.food=500;
+  this.turn=1;
+
+  this.roster={
+   infantry:20,
+   archers:10,
+   cavalry:5
+  };
+
+  this.region="winterfell";
+  this.battle=null;
+ }
+
+ selectHouse(house){
+
+  this.house=house;
+
+  this.gold=1000+HOUSES[house].gold;
+
+  document.getElementById("houseScreen").classList.add("hidden");
+  document.getElementById("campaignScreen").classList.remove("hidden");
+  document.getElementById("stats").classList.remove("hidden");
+
+  this.update();
+  this.selectRegion("winterfell");
+ }
+
+ selectRegion(key){
+
+  this.region=key;
+
+  const r=REGIONS[key];
+
+  document.querySelectorAll(".region")
+   .forEach(x=>x.classList.remove("active"));
+
+  document.getElementById(key).classList.add("active");
+
+  document.getElementById("regionName").textContent=r.name;
+
+  document.getElementById("regionDesc").textContent=
+   `Controlled by ${r.owner.toUpperCase()} • Defense Power: ${r.power}`;
+
+  const btn=document.getElementById("attackBtn");
+
+  if(r.owner===this.house){
+
+   btn.disabled=true;
+   btn.textContent="🛡️ GARRISON FORTIFIED";
+   btn.style.background="#374151";
+
+  }else{
+
+   btn.disabled=false;
+   btn.style.background="#b91c1c";
+   btn.textContent=`⚔️ ATTACK ${r.name.toUpperCase()}`;
+  }
+ }
+
+ recruit(type){
+
+  const data={
+   infantry:{cost:50,amount:5},
+   archers:{cost:60,amount:5},
+   cavalry:{cost:100,amount:3}
+  }[type];
+
+  if(this.gold<data.cost){
+   alert("Not enough Gold!");
+   return;
+  }
+
+  this.gold-=data.cost;
+  this.roster[type]+=data.amount;
+
+  this.update();
+ }
+
+ endTurn(){
+
+  this.turn++;
+
+  let income=200;
+
+  if(this.house==="lannister")income=300;
+
+  this.gold+=income;
+  this.food+=100;
+
+  this.update();
+ }
+
+ update(){
+
+  document.getElementById("gold").textContent=this.gold;
+  document.getElementById("food").textContent=this.food;
+  document.getElementById("turn").textContent=this.turn;
+
+  document.getElementById("infantry").textContent=this.roster.infantry;
+  document.getElementById("archers").textContent=this.roster.archers;
+  document.getElementById("cavalry").textContent=this.roster.cavalry;
+
+  Object.keys(REGIONS).forEach(k=>{
+   document.getElementById("owner-"+k).textContent=
+    "Owner: "+REGIONS[k].owner.toUpperCase();
+  });
+ }
+
+ startBattle(){
+
+  const target=REGIONS[this.region];
+
+  if(target.owner===this.house)return;
+
+  document.getElementById("campaignScreen").classList.add("hidden");
+  document.getElementById("battleScreen").classList.remove("hidden");
+
+  document.getElementById("playerBadge").textContent=
+   HOUSES[this.house].name;
+
+  document.getElementById("enemyBadge").textContent=
+   target.owner.toUpperCase();
+
+  const canvas=document.getElementById("battleCanvas");
+
+  this.battle=new Battle(
+   canvas,
+   this.house,
+   target.owner,
+   this.roster,
+   target.power,
+   (victory,survivors,enemyRemaining)=>
+    this.battleEnd(victory,survivors,enemyRemaining)
+  );
+
+  this.battle.start();
+ }
+
+ selectUnits(type){
+
+  if(this.battle)this.battle.selectType(type);
+ }
+
+ allCharge(){
+
+  if(this.battle)this.battle.allCharge();
+ }
+
+ battleEnd(victory,survivors,enemyRemaining){
+
+  document.getElementById("resultModal").classList.remove("hidden");
+
+  document.getElementById("resultSurvivors").textContent=survivors;
+  document.getElementById("resultEnemy").textContent=enemyRemaining;
+
+  if(victory){
+
+   sound.victory();
+
+   REGIONS[this.region].owner=this.house;
+
+   this.gold+=300;
+
+   document.getElementById("resultIcon").textContent="🏆";
+   document.getElementById("resultTitle").textContent="VICTORY!";
+   document.getElementById("resultText").textContent=
+    `You conquered ${REGIONS[this.region].name}. The territory now belongs to House ${HOUSES[this.house].name}.`;
+
+   document.getElementById("resultGold").textContent="+300";
+
+  }else{
+
+   sound.defeat();
+
+   document.getElementById("resultIcon").textContent="💀";
+   document.getElementById("resultTitle").textContent="DEFEAT";
+   document.getElementById("resultText").textContent=
+    `Your army was defeated at ${REGIONS[this.region].name}. Rebuild your forces and try again.`;
+
+   document.getElementById("resultGold").textContent="+0";
+  }
+
+  this.update();
+ }
+
+ closeBattle(){
+
+  document.getElementById("resultModal").classList.add("hidden");
+  document.getElementById("battleScreen").classList.add("hidden");
+  document.getElementById("campaignScreen").classList.remove("hidden");
+
+  this.selectRegion(this.region);
+  this.update();
+ }
+}
+
+const game=new Game();
+
+</script></body>
+</html>
